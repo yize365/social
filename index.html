@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心灵暖宝 | 社交人格测试</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="index.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header fade-in">
+            <div class="coffee-icon">
+                <i class="fas fa-coffee"></i>
+            </div>
+            <h1>    心灵暖宝 | 社交人格测试</h1>
+            <p class="subtitle">通过10道社交场景题目，发现你的专属社交人格类型</p>
+        </header>
+
+        <main>
+            <div class="card fade-in" style="animation-delay: 0.1s;">
+                <div class="invitation-section">
+                    <h2><i class="fas fa-key"></i> 请输入邀请码开始测试</h2>
+                    <p>本测试为邀请制，请输入有效的邀请码开始</p>
+                    
+                    <div class="invitation-input">
+                        <input type="text" 
+                               id="invitationCode" 
+                               placeholder="请输入邀请码" 
+                               maxlength="20"
+                               autocomplete="off">
+                        <button class="btn btn-primary" id="submitInvitation">
+                            <i class="fas fa-play"></i> 开始测试
+                        </button>
+                    </div>
+                    
+                    <div id="invitationMessage" class="message"></div>
+                    
+                    <div class="hint">
+                        <p><i class="fas fa-lightbulb"></i> 提示：邀请码通常是8-12位字母数字组合</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card fade-in" style="animation-delay: 0.2s;">
+                <h3><i class="fas fa-info-circle"></i> 测试说明</h3>
+                <div class="test-info">
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> 10道精心设计的社交场景题目</li>
+                        <li><i class="fas fa-check-circle"></i> 基于心理学原理的计分规则</li>
+                        <li><i class="fas fa-check-circle"></i> 4种社交人格类型分析</li>
+                        <li><i class="fas fa-check-circle"></i> 个性化建议与指导</li>
+                        <li><i class="fas fa-check-circle"></i> 完成时间约3-5分钟</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card fade-in" style="animation-delay: 0.3s;">
+                <h3><i class="fas fa-user-friends"></i> 社交人格类型介绍</h3>
+                <div class="personality-previews">
+                    <div class="preview-item" data-type="A" style="border: 2px solid #3498db;">
+                        <div class="preview-badge" style="background: #3498db;">1</div>
+                        <h4>高冷型 · 小圈精友</h4>
+                        <p>社交圈小而精，注重质量而非数量</p>
+                    </div>
+                    <div class="preview-item" data-type="B" style="border: 2px solid #2ecc71;">
+                        <div class="preview-badge" style="background: #2ecc71;">2</div>
+                        <h4>温和型 · 圈子粘合剂</h4>
+                        <p>亲和力强，擅长倾听与共情</p>
+                    </div>
+                    <div class="preview-item" data-type="C" style="border: 2px solid #e74c3c;">
+                        <div class="preview-badge" style="background: #e74c3c;">3</div>
+                        <h4>潮流型 · 气氛发动机</h4>
+                        <p>聚会中的活跃担当，自带热场buff</p>
+                    </div>
+                    <div class="preview-item" data-type="D" style="border: 2px solid #9b59b6;">
+                        <div class="preview-badge" style="background: #9b59b6;">4</div>
+                        <h4>暖心型 · 细节照顾者</h4>
+                        <p>擅长捕捉情绪，默默照顾身边人</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="disclaimer">
+            <p><i class="fas fa-exclamation-triangle"></i> 免责声明：本测试为趣味娱乐性质，仅提供社交人格启发，不构成专业心理评估。</p>
+            <p>© 2025 心灵暖宝 | 社交人格测试 · 保留所有权利</p>
+            <p class="shop-link">
+                <i class="fas fa-heart"></i>
+                <a href="https://www.xiaohongshu.com/user/profile/671f5878000000000b033f39?xsec_token=YB7n700r-2H6XaOHvXP_rWvjpp7Wq-ZeBEd4UOBFi8HhE%3D&xsec_source=app_share&xhsshare=&shareRedId=OD0zRjg9O0E2NzUyOTgwNjZFOTo3SzlC&apptime=1767598872&share_id=9141b4fa2bbd4ef69b59ad6c760867f5" target="_blank">关注我的小红书</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

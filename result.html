@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心灵暖宝 | 测试结果-社交人格测试</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .container {
+            min-height: auto;
+        }
+        
+        .result-header {
+            text-align: center;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            border-radius: 20px;
+        }
+        
+        .personality-badge {
+            display: inline-block;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin: 15px 0;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .personality-description {
+            margin: 25px 0;
+            padding: 25px;
+            background: rgba(222, 184, 135, 0.1);
+            border-radius: 15px;
+            border-left: 4px solid;
+        }
+        
+        .advice-box {
+            background: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 10px;
+        }
+        
+        .score-bar {
+            margin: 20px 0;
+        }
+        
+        .score-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .score-fill {
+            height: 20px;
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+        
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .scores-chart {
+            margin: 30px 0;
+        }
+        
+        .test-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+        }
+        
+        .test-meta i {
+            margin-right: 8px;
+        }
+        
+        .traits-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .trait-tag {
+            padding: 8px 16px;
+            background: rgba(139, 69, 19, 0.1);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: #8B4513;
+            border: 1px solid rgba(139, 69, 19, 0.2);
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .comparison-item {
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #eee;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .comparison-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-badge {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+        
+        .comparison-desc {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-icon {
+            font-size: 3rem;
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+        
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .modal-message {
+            color: #666;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-btn-cancel {
+            background: #f5f5f5;
+            color: #666;
+        }
+        
+        .modal-btn-cancel:hover {
+            background: #e0e0e0;
+        }
+        
+        .modal-btn-confirm {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .modal-btn-confirm:hover {
+            background: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="result-header">
+            <div class="coffee-icon">
+                <i class="fas fa-coffee"></i>
+            </div>
+            <h1>测试结果</h1>
+            <p class="subtitle">你的社交人格类型已揭晓</p>
+        </header>
+
+        <main id="resultContent">
+            <div class="card">
+                <h2>正在加载测试结果...</h2>
+            </div>
+        </main>
+
+        <div class="action-buttons">
+            <button class="btn btn-secondary" id="retakeTest">
+                <i class="fas fa-redo"></i> 重新测试
+            </button>
+            <button class="btn btn-primary" id="downloadResult">
+                <i class="fas fa-download"></i> 下载结果
+            </button>
+        </div>
+
+        <footer class="disclaimer">
+            <p><i class="fas fa-exclamation-triangle"></i> 免责声明：本测试为趣味娱乐性质，仅提供社交人格启发，不构成专业心理评估。</p>
+            <p>© 2024 咖啡社交人格测试 · 保留所有权利</p>
+            <p class="shop-link">
+                <i class="fas fa-heart"></i>
+                <a href="https://www.xiaohongshu.com/user/profile/671f5878000000000b033f39?xsec_token=YB7n700r-2H6XaOHvXP_rWvjpp7Wq-ZeBEd4UOBFi8HhE%3D&xsec_source=app_share&xhsshare=&shareRedId=OD0zRjg9O0E2NzUyOTgwNjZFOTo3SzlC&apptime=1767598872&share_id=9141b4fa2bbd4ef69b59ad6c760867f5" target="_blank">关注我的小红书</a>
+            </p>
+        </footer>
+    </div>
+
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3 class="modal-title">确认重新测试</h3>
+                <p class="modal-message">确定要重新测试吗？当前结果将丢失。</p>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="modalCancel">取消</button>
+                <button class="modal-btn modal-btn-confirm" id="modalConfirm">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const personalityTypes = {
+            A: {
+                name: "高冷型",
+                label: "小圈精友",
+                color: "#3498db",
+                description: "社交圈小而精，慢热但对在意的人很真诚，注重社交质量而非数量，独处时更放松。",
+                advice: "偶尔可以尝试轻度拓展社交，会遇到同频的人~",
+                traits: ["冷静独立", "注重隐私", "深度社交", "边界感强"]
+            },
+            B: {
+                name: "温和型",
+                label: "圈子粘合剂",
+                color: "#2ecc71",
+                description: "亲和力强，擅长倾听与共情，是朋友间的'情绪缓冲带'，能自然化解社交尴尬。",
+                advice: "不用总迁就他人，偶尔表达自己的需求会更轻松~",
+                traits: ["温和体贴", "善解人意", "团队融合", "情绪稳定"]
+            },
+            C: {
+                name: "潮流型",
+                label: "气氛发动机",
+                color: "#e74c3c",
+                description: "喜欢新鲜社交，是聚会中的活跃担当，能快速和陌生人熟络，自带'热场buff'。",
+                advice: "偶尔慢下来听别人说话，会发现更多有趣的细节~",
+                traits: ["热情主动", "创意无限", "社交达人", "能量充沛"]
+            },
+            D: {
+                name: "暖心型",
+                label: "细节照顾者",
+                color: "#9b59b6",
+                description: "擅长捕捉他人的情绪，会默默照顾身边人的需求，是朋友眼里的'靠谱搭子'。",
+                advice: "别太透支自己的精力，也要记得照顾自己的情绪~",
+                traits: ["细致周到", "同理心强", "默默付出", "可靠稳定"]
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const testAccess = localStorage.getItem('test_access') || sessionStorage.getItem('test_access');
+            if (testAccess !== 'granted') {
+                alert('请先验证邀请码');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            const resultContent = document.getElementById('resultContent');
+            
+            let resultData;
+            try {
+                console.log('检查 localStorage 可用性:', typeof Storage !== 'undefined' ? '可用' : '不可用');
+                
+                const storedData = localStorage.getItem('test_result');
+                console.log('localStorage 中的 test_result:', storedData);
+                
+                if (!storedData) {
+                    throw new Error('未找到测试结果');
+                }
+                
+                resultData = JSON.parse(storedData);
+                console.log('解析后的测试结果数据:', resultData);
+                
+                if (!resultData) {
+                    throw new Error('测试结果为空');
+                }
+                if (typeof resultData !== 'object') {
+                    throw new Error('测试结果不是对象格式');
+                }
+                if (!resultData.type) {
+                    throw new Error('测试结果缺少类型字段');
+                }
+                if (!resultData.scores) {
+                    throw new Error('测试结果缺少得分字段');
+                }
+                if (!resultData.percentages) {
+                    throw new Error('测试结果缺少百分比字段');
+                }
+                
+                console.log('测试结果数据验证通过');
+            } catch (error) {
+                console.error('读取测试结果失败:', error);
+                resultContent.innerHTML = `
+                    <div class="card">
+                        <h2><i class="fas fa-exclamation-circle"></i> 无法加载测试结果</h2>
+                        <p>错误信息: ${error.message}</p>
+                        <div style="margin: 20px 0;">
+                            <h3>可能的原因:</h3>
+                            <ul>
+                                <li>测试尚未完成</li>
+                                <li>测试结果已过期或被清除</li>
+                                <li>浏览器不支持 localStorage</li>
+                            </ul>
+                        </div>
+                        <div style="text-align: center; margin: 20px 0;">
+                            <button class="btn btn-primary" onclick="window.location.href='test.html'">
+                                <i class="fas fa-play"></i> 重新开始测试
+                            </button>
+                        </div>
+                        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                            <h4>调试信息:</h4>
+                            <p>localStorage 可用: ${typeof Storage !== 'undefined' ? '是' : '否'}</p>
+                            <p>test_result 存在: ${localStorage.getItem('test_result') ? '是' : '否'}</p>
+                            <p>test_result 内容: ${localStorage.getItem('test_result') || '(空)'}</p>
+                            <p>错误类型: ${error.name}</p>
+                            <p>错误堆栈: ${error.stack}</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const retakeBtn = document.getElementById('retakeTest');
+            const downloadBtn = document.getElementById('downloadResult');
+            
+            renderResult(resultData);
+            
+            retakeBtn.addEventListener('click', () => {
+                const modal = document.getElementById('confirmModal');
+                modal.classList.add('active');
+            });
+            
+            document.getElementById('modalCancel').addEventListener('click', () => {
+                const modal = document.getElementById('confirmModal');
+                modal.classList.remove('active');
+            });
+            
+            document.getElementById('modalConfirm').addEventListener('click', () => {
+                localStorage.removeItem('test_result');
+                localStorage.removeItem('test_progress');
+                window.location.href = 'test.html';
+            });
+            
+            document.getElementById('confirmModal').addEventListener('click', (e) => {
+                if (e.target.id === 'confirmModal') {
+                    e.target.classList.remove('active');
+                }
+            });
+            
+            downloadBtn.addEventListener('click', () => {
+                downloadResult(resultData);
+            });
+            
+            function renderResult(data) {
+                const type = data.type;
+                const scores = data.scores;
+                const percentages = data.percentages;
+                
+                console.log('渲染结果:', type, scores, percentages);
+                
+                const colorMap = {
+                    A: '#3498db',
+                    B: '#2ecc71', 
+                    C: '#e74c3c',
+                    D: '#9b59b6'
+                };
+                
+                let typeLetter = '';
+                for (const [key, value] of Object.entries(personalityTypes)) {
+                    if (value.name === type.name) {
+                        typeLetter = key;
+                        break;
+                    }
+                }
+                
+                let maxScore = 0;
+                let maxType = 'A';
+                Object.entries(scores).forEach(([typeKey, score]) => {
+                    if (score > maxScore) {
+                        maxScore = score;
+                        maxType = typeKey;
+                    }
+                });
+                
+                resultContent.innerHTML = `
+                    <div class="card fade-in">
+                        <div class="personality-badge" style="background: ${type.color};">
+                            ${type.name} · ${type.label}
+                        </div>
+                        
+                        <h2 style="color: ${type.color}; text-align: center;">${type.name}</h2>
+                        <p class="subtitle" style="text-align: center;">${type.label}</p>
+                        
+                        <div class="personality-description" style="border-color: ${type.color}">
+                            <p><strong>特点描述：</strong>${type.description}</p>
+                            <div class="advice-box">
+                                <p><strong>社交建议：</strong>${type.advice}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="traits-container">
+                            ${type.traits.map(trait => `
+                                <span class="trait-tag">${trait}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="card fade-in" style="animation-delay: 0.2s;">
+                        <h3><i class="fas fa-chart-bar"></i> 得分分布</h3>
+                        
+                        <div class="scores-chart">
+                            ${Object.entries(scores).map(([typeKey, score]) => {
+                                const percentage = percentages[typeKey];
+                                const isDominant = typeKey === maxType;
+                                const color = colorMap[typeKey];
+                                
+                                return `
+                                    <div class="score-bar">
+                                        <div class="score-label">
+                                            <span>${personalityTypes[typeKey].name} (${typeKey})</span>
+                                            <span>${score}分 (${percentage}%) ${isDominant ? '⭐' : ''}</span>
+                                        </div>
+                                        <div class="score-fill" style="width: ${percentage}%; background: ${color}; opacity: ${isDominant ? '1' : '0.7'};"></div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                        
+                        <div class="test-meta">
+                            <p><i class="far fa-calendar-alt"></i> 测试日期: ${data.testDate || new Date().toLocaleDateString('zh-CN')}</p>
+                            <p><i class="far fa-clock"></i> 完成题目: ${data.scores.A + data.scores.B + data.scores.C + data.scores.D}/10</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card fade-in" style="animation-delay: 0.3s;">
+                        <h3><i class="fas fa-users"></i> 与其他类型对比</h3>
+                        <p>了解其他社交人格类型的特点，可以帮助你更好地理解朋友和同事：</p>
+                        
+                        <div class="comparison-grid">
+                            ${Object.entries(personalityTypes).map(([key, pType]) => {
+                                if (key === maxType) return '';
+                                
+                                return `
+                                    <div class="comparison-item" style="border-color: ${pType.color}30">
+                                        <div class="comparison-badge" style="background: ${pType.color}">${pType.name.charAt(0)}</div>
+                                        <h4>${pType.name}</h4>
+                                        <p>${pType.label}</p>
+                                        <p class="comparison-desc">${pType.description.substring(0, 60)}...</p>
+                                    </div>
+                                `;
+                            }).filter(Boolean).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            function downloadResult(data) {
+                const type = data.type;
+                
+                const content = `
+咖啡社交人格测试 - 测试报告
+==============================
+测试日期：${data.testDate || new Date().toLocaleDateString('zh-CN')}
+
+主要人格类型：${type.name} (${type.label})
+--------------------------------
+特点描述：
+${type.description}
+
+社交建议：
+${type.advice}
+
+得分分布：
+--------------------------------
+高冷型(A): ${data.scores.A}分 (${data.percentages.A}%)
+温和型(B): ${data.scores.B}分 (${data.percentages.B}%)
+潮流型(C): ${data.scores.C}分 (${data.percentages.C}%)
+暖心型(D): ${data.scores.D}分 (${data.percentages.D}%)
+
+性格标签：${type.traits.join(', ')}
+
+--------------------------------
+本测试为趣味娱乐性质，仅提供社交人格启发。
+© 2025 心灵暖宝 | 社交人格测试
+                `;
+                
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `社交人格测试报告_${new Date().toLocaleDateString('zh-CN')}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert('结果已下载！');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试进行中 - 心灵暖宝 | 社交人格测试</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="test-header">
+            <div class="test-title">
+                <h1><i class="fas fa-coffee"></i> 社交人格测试</h1>
+                <p class="test-subtitle">发现你的社交属性</p>
+            </div>
+            <button class="btn btn-secondary btn-small" id="restartTest">
+                <i class="fas fa-redo"></i> 重新开始
+            </button>
+        </header>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <div class="progress-text">
+                <span>进度: <span id="progressPercent">0%</span></span>
+                <span>题目: <span id="currentQuestionNum">1</span>/<span id="totalQuestions">10</span></span>
+                <span>已答: <span id="answeredCount">0</span>题</span>
+            </div>
+        </div>
+
+        <main id="testContent">
+        </main>
+
+        <div class="navigation-buttons">
+            <button class="btn btn-secondary" id="prevBtn" disabled>
+                <i class="fas fa-arrow-left"></i> 上一题
+            </button>
+            <button class="btn btn-primary" id="nextBtn">
+                下一题 <i class="fas fa-arrow-right"></i>
+            </button>
+            <button class="btn btn-primary" id="submitBtn" style="display: none;">
+                <i class="fas fa-check"></i> 提交测试
+            </button>
+        </div>
+
+        <div class="disclaimer">
+            <p><i class="fas fa-exclamation-triangle"></i> 请根据你的真实社交偏好选择，答案没有对错之分</p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                text: "朋友组周末聚会，你会优先选哪种形式？",
+                options: [
+                    { value: "A", text: "2-3人小聚（安静聊天）" },
+                    { value: "B", text: "5人左右的家常菜局（轻松温馨）" },
+                    { value: "C", text: "10人以上的主题派对（热闹有趣）" },
+                    { value: "D", text: "户外野餐局（能照顾到每个人的需求）" }
+                ]
+            },
+            {
+                id: 2,
+                text: "陌生社交场合（如朋友的朋友局），你通常会？",
+                options: [
+                    { value: "A", text: "安静待在角落，仅和熟悉的人互动" },
+                    { value: "B", text: "主动和身边人礼貌搭话（聊天气/环境）" },
+                    { value: "C", text: "快速融入群体，带动话题活跃气氛" },
+                    { value: "D", text: "观察大家的状态，默默照顾社恐的人" }
+                ]
+            },
+            {
+                id: 3,
+                text: "朋友突然找你吐槽烦心事，你会？",
+                options: [
+                    { value: "A", text: "认真听但少发言，偶尔给简短回应" },
+                    { value: "B", text: "耐心听+共情，帮对方梳理情绪" },
+                    { value: "C", text: "用搞笑段子转移话题，让对方开心" },
+                    { value: "D", text: "记下来对方的困扰，后续主动关心进展" }
+                ]
+            },
+            {
+                id: 4,
+                text: "社交场合冷场时，你会？",
+                options: [
+                    { value: "A", text: "假装没察觉，继续做自己的事" },
+                    { value: "B", text: "主动找轻松话题（如最近的热门剧）" },
+                    { value: "C", text: "发起小游戏/互动，快速热场" },
+                    { value: "D", text: "悄悄和身边人搭话，避免对方尴尬" }
+                ]
+            },
+            {
+                id: 5,
+                text: "连续社交2天后，你需要哪种方式充电？",
+                options: [
+                    { value: "A", text: "独处一整天（拒绝任何社交）" },
+                    { value: "B", text: "和1位亲密好友浅聊放松" },
+                    { value: "C", text: "换个轻松的社交场景（如看展搭伴）" },
+                    { value: "D", text: "边宅家边和朋友线上闲聊" }
+                ]
+            },
+            {
+                id: 6,
+                text: "多人聚会中，你更像哪种角色？",
+                options: [
+                    { value: "A", text: "观察者（默默听大家聊天）" },
+                    { value: "B", text: "倾听者（接话+帮大家圆场）" },
+                    { value: "C", text: "气氛组（带头玩梗/搞氛围）" },
+                    { value: "D", text: "照顾者（递水/帮大家安排细节）" }
+                ]
+            },
+            {
+                id: 7,
+                text: "社交中遇到观点冲突，你会？",
+                options: [
+                    { value: "A", text: "不争论，默默终止这个话题" },
+                    { value: "B", text: "温和表达自己的想法，避免矛盾" },
+                    { value: "C", text: "有理有据辩论，带动大家讨论热度" },
+                    { value: "D", text: "调和双方观点，让氛围回归融洽" }
+                ]
+            },
+            {
+                id: 8,
+                text: "刚到新公司，你会多久融入同事圈？",
+                options: [
+                    { value: "A", text: "1个月以上（等别人主动搭话）" },
+                    { value: "B", text: "2-3周（慢慢和邻座同事熟悉）" },
+                    { value: "C", text: "1周内（主动加入同事的午餐局）" },
+                    { value: "D", text: "3天内（帮同事带咖啡/整理资料拉近距离）" }
+                ]
+            },
+            {
+                id: 9,
+                text: "朋友约你去不感兴趣的社交局，你会？",
+                options: [
+                    { value: "A", text: "直接拒绝（不想勉强自己）" },
+                    { value: "B", text: "委婉说'有事'，事后补约单独见面" },
+                    { value: "C", text: "答应并尝试找到有趣的点（比如认识新朋友）" },
+                    { value: "D", text: "答应陪朋友待一会儿，再找借口提前走" }
+                ]
+            },
+            {
+                id: 10,
+                text: "社交中有人对你过度热情（如查户口式提问），你会？",
+                options: [
+                    { value: "A", text: "敷衍回应，找机会离开" },
+                    { value: "B", text: "礼貌转移话题，保持距离" },
+                    { value: "C", text: "开玩笑式'打岔'，化解尴尬又不冷场" },
+                    { value: "D", text: "温和说'不太想聊这个~'，同时照顾对方情绪" }
+                ]
+            }
+        ];
+
+        class TestEngine {
+            constructor() {
+                this.currentQuestion = 0;
+                this.answers = new Array(questions.length).fill(null);
+                this.startTime = Date.now();
+                this.testCompleted = false;
+            }
+            
+            start() {
+                this.currentQuestion = 0;
+                this.answers.fill(null);
+                this.startTime = Date.now();
+                this.testCompleted = false;
+                this.saveProgress();
+            }
+            
+            answer(questionId, answer) {
+                if (questionId >= 0 && questionId < questions.length) {
+                    this.answers[questionId] = answer;
+                    this.saveProgress();
+                    return true;
+                }
+                return false;
+            }
+            
+            next() {
+                if (this.currentQuestion < questions.length - 1) {
+                    this.currentQuestion++;
+                    return true;
+                }
+                return false;
+            }
+            
+            previous() {
+                if (this.currentQuestion > 0) {
+                    this.currentQuestion--;
+                    return true;
+                }
+                return false;
+            }
+            
+            complete() {
+                this.testCompleted = true;
+                this.saveProgress();
+                return true;
+            }
+            
+            saveProgress() {
+                const progress = {
+                    currentQuestion: this.currentQuestion,
+                    answers: this.answers,
+                    startTime: this.startTime,
+                    testCompleted: this.testCompleted
+                };
+                
+                try {
+                    localStorage.setItem('test_progress', JSON.stringify(progress));
+                    return true;
+                } catch (error) {
+                    console.error('保存进度失败:', error);
+                    return false;
+                }
+            }
+            
+            restoreProgress() {
+                try {
+                    const progress = JSON.parse(localStorage.getItem('test_progress'));
+                    if (progress) {
+                        this.currentQuestion = progress.currentQuestion || 0;
+                        this.answers = progress.answers || new Array(questions.length).fill(null);
+                        this.startTime = progress.startTime || Date.now();
+                        this.testCompleted = progress.testCompleted || false;
+                        return true;
+                    }
+                } catch (error) {
+                    console.error('恢复进度失败:', error);
+                }
+                return false;
+            }
+            
+            clearProgress() {
+                localStorage.removeItem('test_progress');
+                this.currentQuestion = 0;
+                this.answers.fill(null);
+                this.testCompleted = false;
+            }
+            
+            getProgress() {
+                const answered = this.answers.filter(a => a !== null).length;
+                const total = questions.length;
+                const percentage = Math.round((answered / total) * 100);
+                
+                return {
+                    current: answered,
+                    total: total,
+                    percentage: percentage,
+                    currentQuestion: this.currentQuestion + 1
+                };
+            }
+            
+            getCurrentQuestion() {
+                return questions[this.currentQuestion];
+            }
+            
+            isAllAnswered() {
+                return this.answers.every(a => a !== null);
+            }
+            
+            getAnsweredCount() {
+                return this.answers.filter(a => a !== null).length;
+            }
+            
+            isCurrentAnswered() {
+                return this.answers[this.currentQuestion] !== null;
+            }
+            
+            getCurrentAnswer() {
+                return this.answers[this.currentQuestion];
+            }
+        }
+
+        class ScoringSystem {
+            calculateScore(answers) {
+                const scores = { A: 0, B: 0, C: 0, D: 0 };
+                
+                answers.forEach(answer => {
+                    if (answer && scores.hasOwnProperty(answer)) {
+                        scores[answer]++;
+                    }
+                });
+                
+                let maxScore = 0;
+                let dominantType = null;
+                
+                Object.entries(scores).forEach(([type, score]) => {
+                    if (score > maxScore) {
+                        maxScore = score;
+                        dominantType = type;
+                    } else if (score === maxScore && dominantType) {
+                        const priority = { A: 4, B: 3, C: 2, D: 1 };
+                        if (priority[type] > priority[dominantType]) {
+                            dominantType = type;
+                        }
+                    }
+                });
+                
+                return {
+                    scores: scores,
+                    dominantType: dominantType,
+                    maxScore: maxScore,
+                    totalQuestions: answers.length
+                };
+            }
+            
+            getPersonalityDescription(type) {
+                const personalityTypes = {
+                    A: {
+                        name: "高冷型",
+                        label: "小圈精友",
+                        color: "#3498db",
+                        description: "社交圈小而精，慢热但对在意的人很真诚，注重社交质量而非数量，独处时更放松。",
+                        advice: "偶尔可以尝试轻度拓展社交，会遇到同频的人~",
+                        traits: ["冷静独立", "注重隐私", "深度社交", "边界感强"]
+                    },
+                    B: {
+                        name: "温和型",
+                        label: "圈子粘合剂",
+                        color: "#2ecc71",
+                        description: "亲和力强，擅长倾听与共情，是朋友间的'情绪缓冲带'，能自然化解社交尴尬。",
+                        advice: "不用总迁就他人，偶尔表达自己的需求会更轻松~",
+                        traits: ["温和体贴", "善解人意", "团队融合", "情绪稳定"]
+                    },
+                    C: {
+                        name: "潮流型",
+                        label: "气氛发动机",
+                        color: "#e74c3c",
+                        description: "喜欢新鲜社交，是聚会中的活跃担当，能快速和陌生人熟络，自带'热场buff'。",
+                        advice: "偶尔慢下来听别人说话，会发现更多有趣的细节~",
+                        traits: ["热情主动", "创意无限", "社交达人", "能量充沛"]
+                    },
+                    D: {
+                        name: "暖心型",
+                        label: "细节照顾者",
+                        color: "#9b59b6",
+                        description: "擅长捕捉他人的情绪，会默默照顾身边人的需求，是朋友眼里的'靠谱搭子'。",
+                        advice: "别太透支自己的精力，也要记得照顾自己的情绪~",
+                        traits: ["细致周到", "同理心强", "默默付出", "可靠稳定"]
+                    }
+                };
+                
+                return personalityTypes[type] || personalityTypes.A;
+            }
+            
+            generateReport(scoreResult) {
+                const dominantType = this.getPersonalityDescription(scoreResult.dominantType);
+                const scores = scoreResult.scores;
+                const total = scoreResult.totalQuestions;
+                
+                const percentages = {};
+                Object.entries(scores).forEach(([type, score]) => {
+                    percentages[type] = Math.round((score / total) * 100);
+                });
+                
+                return {
+                    type: dominantType,
+                    scores: scores,
+                    percentages: percentages,
+                    testDate: new Date().toLocaleDateString('zh-CN')
+                };
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const testAccess = localStorage.getItem('test_access') || sessionStorage.getItem('test_access');
+            if (testAccess !== 'granted') {
+                alert('请先验证邀请码');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            const testEngine = new TestEngine();
+            const scoringSystem = new ScoringSystem();
+            
+            const testContent = document.getElementById('testContent');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const restartBtn = document.getElementById('restartTest');
+            const progressFill = document.getElementById('progressFill');
+            const progressPercent = document.getElementById('progressPercent');
+            const currentQuestionNum = document.getElementById('currentQuestionNum');
+            const totalQuestions = document.getElementById('totalQuestions');
+            const answeredCount = document.getElementById('answeredCount');
+            
+            totalQuestions.textContent = questions.length;
+            
+            if (!testEngine.restoreProgress()) {
+                testEngine.start();
+            }
+            
+            renderQuestion();
+            updateProgress();
+            updateNavigation();
+            
+            function restartTest() {
+                const modal = document.getElementById('confirmModal');
+                modal.classList.add('active');
+            }
+            
+            prevBtn.addEventListener('click', goToPrevious);
+            nextBtn.addEventListener('click', goToNext);
+            submitBtn.addEventListener('click', submitTest);
+            restartBtn.addEventListener('click', restartTest);
+            
+            document.getElementById('modalCancel').addEventListener('click', () => {
+                const modal = document.getElementById('confirmModal');
+                modal.classList.remove('active');
+            });
+            
+            document.getElementById('modalConfirm').addEventListener('click', () => {
+                testEngine.clearProgress();
+                testEngine.start();
+                renderQuestion();
+                updateProgress();
+                updateNavigation();
+                
+                const modal = document.getElementById('confirmModal');
+                modal.classList.remove('active');
+            });
+            
+            document.getElementById('confirmModal').addEventListener('click', (e) => {
+                if (e.target.id === 'confirmModal') {
+                    e.target.classList.remove('active');
+                }
+            });
+            
+            function renderQuestion() {
+                const currentIndex = testEngine.currentQuestion;
+                const question = testEngine.getCurrentQuestion();
+                const currentAnswer = testEngine.answers[currentIndex];
+                
+                currentQuestionNum.textContent = currentIndex + 1;
+                
+                testContent.innerHTML = `
+                    <div class="card question-card">
+                        <div class="question-number">第 ${currentIndex + 1} 题</div>
+                        <div class="question-text">${question.text}</div>
+                        <div class="options-grid">
+                            ${question.options.map(option => `
+                                <button class="option-btn ${currentAnswer === option.value ? 'selected' : ''}"
+                                        data-value="${option.value}">
+                                    <span class="option-label">${option.value}</span>
+                                    <span class="option-text">${option.text}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                
+                document.querySelectorAll('.option-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const value = this.getAttribute('data-value');
+                        selectOption(value);
+                    });
+                });
+            }
+            
+            function selectOption(value) {
+                const currentIndex = testEngine.currentQuestion;
+                testEngine.answer(currentIndex, value);
+                
+                document.querySelectorAll('.option-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                    if (btn.getAttribute('data-value') === value) {
+                        btn.classList.add('selected');
+                    }
+                });
+                
+                updateProgress();
+                updateNavigation();
+                
+                if (currentIndex === questions.length - 1) {
+                    if (testEngine.isCurrentAnswered()) {
+                        submitBtn.style.display = 'inline-flex';
+                        nextBtn.style.display = 'none';
+                    }
+                } else {
+                    setTimeout(() => {
+                        if (testEngine.next()) {
+                            renderQuestion();
+                            updateProgress();
+                            updateNavigation();
+                        }
+                    }, 300);
+                }
+            }
+            
+            function goToPrevious() {
+                if (testEngine.previous()) {
+                    renderQuestion();
+                    updateProgress();
+                    updateNavigation();
+                }
+            }
+            
+            function goToNext() {
+                const currentIndex = testEngine.currentQuestion;
+                if (!testEngine.answers[currentIndex]) {
+                    alert('请先选择当前题目的答案');
+                    return;
+                }
+                
+                if (testEngine.next()) {
+                    renderQuestion();
+                    updateProgress();
+                    updateNavigation();
+                }
+            }
+            
+            function submitTest() {
+                if (!testEngine.isAllAnswered()) {
+                    alert('请完成所有题目后再提交');
+                    return;
+                }
+                
+                testEngine.complete();
+                
+                const scoreResult = scoringSystem.calculateScore(testEngine.answers);
+                const report = scoringSystem.generateReport(scoreResult);
+                
+                localStorage.setItem('test_result', JSON.stringify(report));
+                
+                window.location.href = 'result.html';
+            }
+            
+            function updateProgress() {
+                const progress = testEngine.getProgress();
+                progressFill.style.width = `${progress.percentage}%`;
+                progressPercent.textContent = `${progress.percentage}%`;
+                answeredCount.textContent = progress.current;
+            }
+            
+            function updateNavigation() {
+                const currentIndex = testEngine.currentQuestion;
+                const total = questions.length;
+                const currentAnswer = testEngine.answers[currentIndex];
+                
+                prevBtn.disabled = currentIndex === 0;
+                
+                if (currentIndex === total - 1) {
+                    nextBtn.style.display = 'none';
+                    
+                    if (currentAnswer) {
+                        submitBtn.style.display = 'inline-flex';
+                        submitBtn.disabled = false;
+                    } else {
+                        submitBtn.style.display = 'none';
+                    }
+                } else {
+                    nextBtn.style.display = 'inline-flex';
+                    submitBtn.style.display = 'none';
+                    nextBtn.disabled = !currentAnswer;
+                }
+            }
+            
+            function restartTest() {
+                const modal = document.getElementById('confirmModal');
+                modal.classList.add('active');
+            }
+            
+            window.addEventListener('beforeunload', () => {
+                testEngine.saveProgress();
+            });
+        });
+    </script>
+
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3 class="modal-title">确认重新开始</h3>
+                <p class="modal-message">确定要重新开始测试吗？当前进度将丢失。</p>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="modalCancel">取消</button>
+                <button class="modal-btn modal-btn-confirm" id="modalConfirm">确定</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
