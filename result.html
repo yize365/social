@@ -264,7 +264,7 @@
                 <i class="fas fa-redo"></i> 重新测试
             </button>
             <button class="btn btn-primary" id="downloadResult">
-                <i class="fas fa-download"></i> 下载结果
+                <i class="fas fa-share-alt"></i> 分享报告
             </button>
         </div>
 
@@ -540,44 +540,41 @@
             function downloadResult(data) {
                 const type = data.type;
                 
-                const content = `
-心灵暖宝 | 社交人格测试 - 测试报告
-==============================
-测试日期：${data.testDate || new Date().toLocaleDateString('zh-CN')}
+                const shareText = `【我的社交人格测试结果：
 
-主要人格类型：${type.name} (${type.label})
---------------------------------
-特点描述：
-${type.description}
+🏆 主要性格：${type.name}（${type.label}）
 
-社交建议：
-${type.advice}
+📊 维度得分：
 
-得分分布：
---------------------------------
-高冷型(A): ${data.scores.A}分 (${data.percentages.A}%)
-温和型(B): ${data.scores.B}分 (${data.percentages.B}%)
-潮流型(C): ${data.scores.C}分 (${data.percentages.C}%)
-暖心型(D): ${data.scores.D}分 (${data.percentages.D}%)
+理想主义者：${data.scores.A}/10
 
-性格标签：${type.traits.join(', ')}
+探险家：${data.scores.B}/10
 
---------------------------------
-本测试为趣味娱乐性质，仅提供社交人格启发。
-© 2025 心灵暖宝 | 社交人格测试
-                `;
+潮流型：${data.scores.C}/10
+
+暖心型：${data.scores.D}/10
+
+✨ 社交建议：${type.advice}
+
+🔗 你也来测试一下吧！】`;
                 
-                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `社交人格测试报告_${new Date().toLocaleDateString('zh-CN')}.txt`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                alert('结果已下载！');
+                navigator.clipboard.writeText(shareText)
+                    .then(() => {
+                        const shareBtn = document.getElementById('downloadResult');
+                        const originalText = shareBtn.innerHTML;
+                        const originalBackground = shareBtn.style.background;
+                        shareBtn.innerHTML = '<i class="fas fa-check"></i> 复制成功';
+                        shareBtn.style.background = '#4CAF50';
+                        
+                        setTimeout(() => {
+                            shareBtn.innerHTML = originalText;
+                            shareBtn.style.background = originalBackground;
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('复制失败:', err);
+                        alert('复制失败，请手动选择文本复制。');
+                    });
             }
         });
     </script>
